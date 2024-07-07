@@ -11,23 +11,37 @@ class Location {
     required this.lat,
     required this.lng,
   });
-
+    Map<String, dynamic> toJson() => {
+        "lat": lat,
+        "lng": lng,
+      };
+  static Location fromJson(Map<String, dynamic> json) => Location(
+        lat: json["lat"],
+        lng: json["lng"],
+      );
 }
 class User {
   final String email;
   final String uid;
- final Location location;
+   final Location? location; 
   final String username;
 
 
   const User(
       {required this.username,
       required this.uid,
- required this.location,
+  this.location,
       required this.email,
  
       }
       );
+
+  Map<String, dynamic> toJson() => {
+        "username": username,
+        "uid": uid,
+        "email": email,
+    "location": location?.toJson(), 
+      };
 
 static User fromSnap(DocumentSnapshot snap) {
   print('snap in model $snap');
@@ -56,13 +70,6 @@ static User fromSnap(DocumentSnapshot snap) {
     location: location,
   );
 }
-
-  Map<String, dynamic> toJson() => {
-        "username": username,
-        "uid": uid,
-        "email": email,
-
-      };
 }
 // import 'package:flutter/material.dart';
 // import 'package:cloud_firestore/cloud_firestore.dart';

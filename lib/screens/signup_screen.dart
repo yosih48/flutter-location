@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:template/resources/permission.dart';
 
 import '../resources/auth.dart';
 import '../responsive/mobile_screen_layout.dart';
@@ -19,7 +20,7 @@ class SignupScreen extends StatefulWidget {
 class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
- 
+
   final TextEditingController _usernameController = TextEditingController();
 
   // final _image = null;
@@ -29,49 +30,58 @@ class _SignupScreenState extends State<SignupScreen> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-  
-    _usernameController.dispose();
+    // _emailController.dispose();
+    // _passwordController.dispose();
+
+    // _usernameController.dispose();
   }
 
-  void selectImage() async {
-
-  }
+  void selectImage() async {}
 
   void signUpUser() async {
-
-    setState(() {
-      _isLoading = true;
-    });
-    String res = await AuthMethods().signUpUser(
-      email: _emailController.text,
-      password: _passwordController.text,
-      username: _usernameController.text,
- 
-    );
-    setState(() {
-      _isLoading = false;
-    });
-    if (res != 'success') {
-      showSnackBar(context, res);
-    }else{
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) => const ResponsiveLayout(
-                mobileScreenLayout: MobileScreenLayout(),
-                webScreenLayout: WebScreenLayout(),
-              ),
+    bool hasPermission = await requestLocationPermission();
+    if (hasPermission) {
+       print(' permission');
+      setState(() {
+        _isLoading = true;
+      });
+      String res = await AuthMethods().signUpUser(
+        email: _emailController.text,
+        password: _passwordController.text,
+        username: _usernameController.text,
+      );
+      setState(() {
+        _isLoading = false;
+      });
+      if (res != 'success') {
+        showSnackBar(context, res);
+      } else {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const ResponsiveLayout(
+              mobileScreenLayout: MobileScreenLayout(),
+              webScreenLayout: WebScreenLayout(),
+            ),
           ),
-          );
+        );
+      }
+    } else {
+      print('no permission');
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => const ResponsiveLayout(
+            mobileScreenLayout: MobileScreenLayout(),
+            webScreenLayout: WebScreenLayout(),
+          ),
+        ),
+      );
     }
   }
-
 
   void navigateToLogin() {
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => const LoginScreen()));
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +101,7 @@ class _SignupScreenState extends State<SignupScreen> {
           // SvgPicture.asset('assets/ic_instegram.svg', color: primaryColor,height:64),
           const SizedBox(height: 64),
 //cicular widget to accept and show our selected file
-  
+
           const SizedBox(
             height: 24,
           ),
@@ -115,8 +125,7 @@ class _SignupScreenState extends State<SignupScreen> {
             isPass: true,
           ),
           const SizedBox(height: 24),
-      
-        
+
           //button login
 
           InkWell(

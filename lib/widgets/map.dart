@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
@@ -10,7 +9,6 @@ import '../models/geolocation.dart';
 import '../models/user.dart';
 
 import '../resources/firestore.dart';
-
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -24,8 +22,8 @@ class MapScreenState extends State<MapScreen> {
       Completer<GoogleMapController>();
 
   static const CameraPosition _initialPosition = CameraPosition(
-    target: LatLng(-18.9216855, 47.5725194),// Antananarivo, Madagascar LatLng 🇲🇬
-    zoom: 14.4746,
+    target: LatLng(0, 0), // Null Island
+    zoom: 2,
   );
 
   late StreamSubscription<Position>? locationStreamSubscription;
@@ -36,8 +34,9 @@ class MapScreenState extends State<MapScreen> {
     locationStreamSubscription =
         StreamLocationService.onLocationChanged?.listen(
       (position) async {
+        print('updateUserLocation in map');
         await FirestoreService.updateUserLocation(
-          'nS8AuYrU2DapiTY2ZU1q4fcpc0H2', //Hardcoded uid but this is the uid of the connected user when using authentification service
+          'C38yfM2Yvdf5GvIB9MEGjy7EVBi2', //Hardcoded uid but this is the uid of the connected user when using authentification service
           LatLng(position.latitude, position.longitude),
         );
       },
@@ -50,6 +49,8 @@ class MapScreenState extends State<MapScreen> {
       body: StreamBuilder<List<User>>(
         stream: FirestoreService.userCollectionStream(),
         builder: (context, snapshot) {
+          print("StreamBuilder update"); // Debug print
+          print("Snapshot has data: ${snapshot.hasData}");
           if (!snapshot.hasData) {
             return const Center(
               child: CircularProgressIndicator(),
@@ -58,6 +59,8 @@ class MapScreenState extends State<MapScreen> {
           final Set<Marker> markers = {};
           for (var i = 0; i < snapshot.data!.length; i++) {
             final user = snapshot.data![i];
+            print(user.uid);
+            print(user.username);
             markers.add(
               Marker(
                 markerId: MarkerId('${user.username} position $i'),
@@ -68,17 +71,26 @@ class MapScreenState extends State<MapScreen> {
                     : BitmapDescriptor.defaultMarkerWithHue(
                         BitmapDescriptor.hueYellow,
                       ),
-                position: LatLng(user.location.lat, user.location.lng),
-                onTap: () => {},
+                position: LatLng(user.location!.lat, user.location!.lng),
+                onTap: () => {print('Marker tapped')},
               ),
             );
           }
-          return GoogleMap(
-            initialCameraPosition: _initialPosition,
-            markers: markers,
-            onMapCreated: (GoogleMapController controller) {
-              _controller.complete(controller);
-            },
+
+          print("Number of markers: ${markers.length}"); 
+          return SizedBox(
+              height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: GoogleMap(
+              initialCameraPosition: _initialPosition,
+              markers: markers,
+              onMapCreated: (GoogleMapController controller) {
+                  print("Map created"); 
+                _controller.complete(controller);
+              },
+                onCameraMove: (_) => print("Camera moved"),
+              onCameraIdle: () => print("Camera idle"),
+            ),
           );
         },
       ),

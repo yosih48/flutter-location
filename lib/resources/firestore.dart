@@ -7,10 +7,12 @@ class FirestoreService {
   static final _firestore = FirebaseFirestore.instance;
 
   static Future<void> updateUserLocation(String userId, LatLng location) async {
+     print('Updating location for user: $userId');
     try {
       await _firestore.collection('user').doc(userId).update({
         'location': {'lat': location.latitude, 'lng': location.longitude},
       });
+      print('Location updated successfully');
     } on FirebaseException catch (e) {
       print('Ann error due to firebase occured $e');
     } catch (err) {

@@ -4,8 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:template/models/user.dart' as model;
 import 'package:geolocator/geolocator.dart';
-import 'package:template/models/user.dart';
-import 'package:firebase_auth/firebase_auth.dart' as auth;
+
+
 class AuthMethods {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -17,7 +17,7 @@ class AuthMethods {
 
   // get user details
   Future<model.User> getUserDetails() async {
-    auth.User currentUser = _auth.currentUser!;
+     User currentUser = _auth.currentUser!;
 
     DocumentSnapshot documentSnapshot =
         await _firestore.collection('user').doc(currentUser.uid).get();
@@ -38,16 +38,29 @@ class AuthMethods {
         UserCredential cred = await _auth.createUserWithEmailAndPassword(
             email: email, password: password);
         print(cred.user!.uid);
+
+        // Initialize location as null
+        model.Location? userLocation;
+
+
     // Get current location
-      Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
+        try {
+          // Try to get current location
+          Position position = await Geolocator.getCurrentPosition(
+              desiredAccuracy: LocationAccuracy.high);
+          userLocation =
+              model.Location(lat: position.latitude, lng: position.longitude);
+        } catch (e) {
+          print("Error getting location: $e");
+          // If there's an error getting location, we'll leave it as null
+        }
         //add user to db
         //new way:
         model.User user = model.User(
           username: username,
           uid: cred.user!.uid,
           email: email,
-          location: Location(lat: position.latitude, lng: position.longitude),
+          location: userLocation,
         );
         _firestore.collection('user').doc(cred.user!.uid).set(
               user.toJson(),
