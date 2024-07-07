@@ -22,8 +22,8 @@ class MapScreenState extends State<MapScreen> {
       Completer<GoogleMapController>();
 
   static const CameraPosition _initialPosition = CameraPosition(
-    target: LatLng(0, 0), // Null Island
-    zoom: 2,
+    target: LatLng(31.750832, 35.1857091), // Centered on yosi3's location
+    zoom: 12,
   );
 
   late StreamSubscription<Position>? locationStreamSubscription;
@@ -36,7 +36,7 @@ class MapScreenState extends State<MapScreen> {
       (position) async {
         print('updateUserLocation in map');
         await FirestoreService.updateUserLocation(
-          'C38yfM2Yvdf5GvIB9MEGjy7EVBi2', //Hardcoded uid but this is the uid of the connected user when using authentification service
+          'nLbSlJGy7GZrV0EUVfaKwyxggWM2', //Hardcoded uid but this is the uid of the connected user when using authentification service
           LatLng(position.latitude, position.longitude),
         );
       },
@@ -45,50 +45,60 @@ class MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
+      print("Building MapScreen");
     return Scaffold(
       body: StreamBuilder<List<User>>(
         stream: FirestoreService.userCollectionStream(),
         builder: (context, snapshot) {
           print("StreamBuilder update"); // Debug print
           print("Snapshot has data: ${snapshot.hasData}");
+              print("Snapshot error: ${snapshot.error}");
+       if (snapshot.hasError) {
+            return Center(child: Text("Error: ${snapshot.error}"));
+          }
+
           if (!snapshot.hasData) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
           final Set<Marker> markers = {};
           for (var i = 0; i < snapshot.data!.length; i++) {
             final user = snapshot.data![i];
-            print(user.uid);
-            print(user.username);
-            markers.add(
-              Marker(
-                markerId: MarkerId('${user.username} position $i'),
-                icon: user.username == 'stephano'
-                    ? BitmapDescriptor.defaultMarkerWithHue(
-                        BitmapDescriptor.hueRed,
-                      )
-                    : BitmapDescriptor.defaultMarkerWithHue(
-                        BitmapDescriptor.hueYellow,
-                      ),
-                position: LatLng(user.location!.lat, user.location!.lng),
-                onTap: () => {print('Marker tapped')},
-              ),
-            );
+       print(
+                "User: ${user.username}, Location: ${user.location?.lat}, ${user.location?.lng}");
+          if (user.location != null) {
+              markers.add(
+                Marker(
+                  markerId: MarkerId('${user.username} position $i'),
+                  icon: user.username == 'stephano'
+                      ? BitmapDescriptor.defaultMarkerWithHue(
+                          BitmapDescriptor.hueRed)
+                      : BitmapDescriptor.defaultMarkerWithHue(
+                          BitmapDescriptor.hueYellow),
+                  position: LatLng(user.location!.lat, user.location!.lng),
+                  onTap: () => print('Marker tapped: ${user.username}'),
+                ),
+              );
+            }
           }
 
           print("Number of markers: ${markers.length}"); 
-          return SizedBox(
-              height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            child: GoogleMap(
+          return Container(
+            color: Colors.red,
+            height: 400,
+            width: 400,
+          
+            child: 
+               GoogleMap(
               initialCameraPosition: _initialPosition,
               markers: markers,
+              mapType: MapType.normal,
+              zoomControlsEnabled: true,
               onMapCreated: (GoogleMapController controller) {
-                  print("Map created"); 
+                print("Map created");
                 _controller.complete(controller);
               },
-                onCameraMove: (_) => print("Camera moved"),
+              
+              onCameraMove: (_) => print("Camera moved"),
               onCameraIdle: () => print("Camera idle"),
             ),
           );
