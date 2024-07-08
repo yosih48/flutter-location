@@ -8,7 +8,7 @@
             "name": "location_streamer",
             "request": "launch",
             "type": "dart",
-            "deviceId": "sdk gphone64 x86 64",
+            "deviceId": "sdk gphone x86 64",
         },
         {
             "name": "location_streamer (profile mode)",

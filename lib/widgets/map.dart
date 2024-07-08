@@ -82,26 +82,19 @@ class MapScreenState extends State<MapScreen> {
           }
 
           print("Number of markers: ${markers.length}"); 
-          return Container(
-            color: Colors.red,
-            height: 400,
-            width: 400,
-          
-            child: 
-               GoogleMap(
+          return GoogleMap(
               initialCameraPosition: _initialPosition,
               markers: markers,
               mapType: MapType.normal,
               zoomControlsEnabled: true,
               onMapCreated: (GoogleMapController controller) {
-                print("Map created");
-                _controller.complete(controller);
+           print("Map created");
+           _controller.complete(controller);
               },
               
               onCameraMove: (_) => print("Camera moved"),
               onCameraIdle: () => print("Camera idle"),
-            ),
-          );
+            );
         },
       ),
     );

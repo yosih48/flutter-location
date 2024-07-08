@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../screens/afterLogin.dart';
+import '../screens/googleMap.dart';
 import '../screens/login_screen.dart';
 import '../screens/signup_screen.dart';
 import '../widgets/map.dart';
@@ -16,6 +17,9 @@ List<Widget> homeScreenItems = [
   const MyWidget(),
   const LoginScreen(),
   const MapScreen(),
+  //  MyApp(),
+   GoogleMapPage(),
+
   // const FeedScreen(),
   // const SearchScreen(),
   // const AddPostScreen(),
