@@ -24,7 +24,7 @@ class MapScreenbState extends State<MapScreenb> {
   static const CameraPosition _defaultPosition = CameraPosition(
     target:
         LatLng(-18.9216855, 47.5725194), // Antananarivo, Madagascar LatLng 🇲🇬
-    zoom: 5,
+    zoom: 14.4746,
   );
   CameraPosition? _initialPosition;
   late StreamSubscription<Position>? locationStreamSubscription;
@@ -63,7 +63,7 @@ class MapScreenbState extends State<MapScreenb> {
       setState(() {
         _initialPosition = CameraPosition(
           target: LatLng(position.latitude, position.longitude),
-          zoom: 5,
+          zoom: 1.0,
         );
       });
     } else {
