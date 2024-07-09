@@ -86,13 +86,13 @@ class _LoginScreenState extends State<LoginScreen> {
           //test fiels input for email
           TextFieldInput(
               textEditingController: _emailController,
-              hintText: 'enter your email',
+              hintText: 'הזן כתובת אימייל',
               textInputType: TextInputType.emailAddress),
           const SizedBox(height: 24),
           //test fiels input for password
           TextFieldInput(
             textEditingController: _passwordController,
-            hintText: 'enter your password',
+            hintText: 'הזן סיסמה',
             textInputType: TextInputType.text,
             isPass: true,
           ),
@@ -108,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         color: primaryColor,
                       ),
                     )
-                  : const Text('log in'),
+                  : const Text('היכנס'),
               width: double.infinity,
               alignment: Alignment.center,
               padding: const EdgeInsets.symmetric(vertical: 12),
@@ -128,7 +128,7 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                child: Text('dont have an account?'),
+                child: Text('עדיין אין לך חשבון?'),
                 padding: const EdgeInsets.symmetric(vertical: 8),
               ),
               GestureDetector(
@@ -139,7 +139,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 child: Container(
                   child: Text(
-                    'sign up',
+                    'הירשם',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 8),

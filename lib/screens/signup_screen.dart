@@ -107,20 +107,20 @@ class _SignupScreenState extends State<SignupScreen> {
           ),
           //test fiels input for username
           TextFieldInput(
-              hintText: 'enter your username',
+              hintText: 'שם משתמש',
               textEditingController: _usernameController,
               textInputType: TextInputType.text),
           const SizedBox(height: 24),
           //test fiels input for email
           TextFieldInput(
               textEditingController: _emailController,
-              hintText: 'enter your email',
+              hintText: 'כתובת אימייל',
               textInputType: TextInputType.emailAddress),
           const SizedBox(height: 24),
           //test fiels input for password
           TextFieldInput(
             textEditingController: _passwordController,
-            hintText: 'enter your password',
+            hintText: 'סיסמה',
             textInputType: TextInputType.text,
             isPass: true,
           ),
@@ -137,7 +137,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         color: primaryColor,
                       ),
                     )
-                  : const Text('sign up'),
+                  : const Text('הירשם'),
               width: double.infinity,
               alignment: Alignment.center,
               padding: const EdgeInsets.symmetric(vertical: 12),
@@ -157,14 +157,14 @@ class _SignupScreenState extends State<SignupScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                child: Text('allready have an account?'),
+                child: Text('כבר יש לך חשבון?'),
                 padding: const EdgeInsets.symmetric(vertical: 8),
               ),
               GestureDetector(
                 onTap: navigateToLogin,
                 child: Container(
                   child: Text(
-                    'login',
+                    'היכנס',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 8),
