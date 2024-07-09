@@ -17,6 +17,7 @@ class MapScreenb extends StatefulWidget {
 }
 
 class MapScreenbState extends State<MapScreenb> {
+  String? currentUserId;
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
 
@@ -32,13 +33,15 @@ class MapScreenbState extends State<MapScreenb> {
   void initState() {
     print('maps init stateeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
     super.initState();
-      _setInitialLocation();
+    _setInitialLocation();
+    _getCurrentUserId();
     locationStreamSubscription =
         StreamLocationService.onLocationChanged?.listen(
       (position) async {
         auth.User? user = auth.FirebaseAuth.instance.currentUser;
         if (user != null) {
           print('user is not null');
+          print('currentUserId: ${currentUserId}');
           print(user.uid);
           await FirestoreService.updateUserLocation(
             user.uid, // Use the authenticated user's ID
@@ -53,7 +56,7 @@ class MapScreenbState extends State<MapScreenb> {
 
   Future<void> _setInitialLocation() async {
     bool hasPermission = await StreamLocationService.askLocationPermission();
-    
+
     if (hasPermission) {
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
@@ -66,6 +69,15 @@ class MapScreenbState extends State<MapScreenb> {
     } else {
       setState(() {
         _initialPosition = _defaultPosition;
+      });
+    }
+  }
+
+  Future<void> _getCurrentUserId() async {
+    auth.User? user = auth.FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      setState(() {
+        currentUserId = user.uid;
       });
     }
   }
@@ -89,7 +101,7 @@ class MapScreenbState extends State<MapScreenb> {
                   markers.add(
                     Marker(
                       markerId: MarkerId('${user.username} position $i'),
-                      icon: user.username == 'yosi3'
+                      icon: user.uid == currentUserId
                           ? BitmapDescriptor.defaultMarkerWithHue(
                               BitmapDescriptor.hueRed,
                             )
@@ -97,21 +109,22 @@ class MapScreenbState extends State<MapScreenb> {
                               BitmapDescriptor.hueYellow,
                             ),
                       position: LatLng(user.location!.lat, user.location!.lng),
-                                infoWindow: InfoWindow(
+                      infoWindow: InfoWindow(
                         title: user.username,
                       ),
                       onTap: () async {
-         final GoogleMapController controller = await _controller.future;
+                        final GoogleMapController controller =
+                            await _controller.future;
                         controller.animateCamera(
                           CameraUpdate.newCameraPosition(
                             CameraPosition(
-                              target: LatLng(user.location!.lat, user.location!.lng),
+                              target: LatLng(
+                                  user.location!.lat, user.location!.lng),
                               zoom: 18.0, // Zoom level to focus on the user
                             ),
                           ),
                         );
                         print('Marker tapped: ${user.username}');
-
                       },
                     ),
                   );
