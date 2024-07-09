@@ -16,7 +16,7 @@ List<Widget> homeScreenItems = [
 
   // const SignupScreen(),
   const MyWidget(),
-  const LoginScreen(),
+  // const LoginScreen(),
   const MapScreenb(),
   // const GoogleMaps(),
   // const FeedScreen(),
