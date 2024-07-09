@@ -45,15 +45,15 @@ class MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
-      print("Building MapScreen");
+    print("Building MapScreen");
     return Scaffold(
       body: StreamBuilder<List<User>>(
         stream: FirestoreService.userCollectionStream(),
         builder: (context, snapshot) {
           print("StreamBuilder update"); // Debug print
           print("Snapshot has data: ${snapshot.hasData}");
-              print("Snapshot error: ${snapshot.error}");
-       if (snapshot.hasError) {
+          print("Snapshot error: ${snapshot.error}");
+          if (snapshot.hasError) {
             return Center(child: Text("Error: ${snapshot.error}"));
           }
 
@@ -63,9 +63,9 @@ class MapScreenState extends State<MapScreen> {
           final Set<Marker> markers = {};
           for (var i = 0; i < snapshot.data!.length; i++) {
             final user = snapshot.data![i];
-       print(
+            print(
                 "User: ${user.username}, Location: ${user.location?.lat}, ${user.location?.lng}");
-          if (user.location != null) {
+            if (user.location != null) {
               markers.add(
                 Marker(
                   markerId: MarkerId('${user.username} position $i'),
@@ -78,17 +78,17 @@ class MapScreenState extends State<MapScreen> {
                   onTap: () => print('Marker tapped: ${user.username}'),
                 ),
               );
+            } else {
+              print('nuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuul');
             }
           }
 
-          print("Number of markers: ${markers.length}"); 
+          print("Number of markers: ${markers.length}");
           return Container(
             color: Colors.red,
             height: 400,
             width: 400,
-          
-            child: 
-               GoogleMap(
+            child: GoogleMap(
               initialCameraPosition: _initialPosition,
               markers: markers,
               mapType: MapType.normal,
@@ -97,7 +97,6 @@ class MapScreenState extends State<MapScreen> {
                 print("Map created");
                 _controller.complete(controller);
               },
-              
               onCameraMove: (_) => print("Camera moved"),
               onCameraIdle: () => print("Camera idle"),
             ),

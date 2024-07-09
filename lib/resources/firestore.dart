@@ -13,6 +13,8 @@ class FirestoreService {
         'location': {'lat': location.latitude, 'lng': location.longitude},
       });
       print('Location updated successfully');
+      print(location.latitude);
+      print(location.longitude);
     } on FirebaseException catch (e) {
       print('Ann error due to firebase occured $e');
     } catch (err) {
